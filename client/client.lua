@@ -1,9 +1,47 @@
-local slots = Config.QuickSlots and 5 or exports['lxr-core']:GetConfig().Player.MaxInvSlots
-local Entities = {}
+--[[
+    ██╗     ██╗  ██╗██████╗        ██████╗ ██████╗ ███████╗
+    ██║     ╚██╗██╔╝██╔══██╗      ██╔════╝██╔═══██╗██╔════╝
+    ██║      ╚███╔╝ ██████╔╝█████╗██║     ██║   ██║█████╗  
+    ██║      ██╔██╗ ██╔══██╗╚════╝██║     ██║   ██║██╔══╝  
+    ███████╗██╔╝ ██╗██║  ██║      ╚██████╗╚██████╔╝███████╗
+    ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚═════╝ ╚═════╝ ╚══════╝
 
------------------------------------------------------------------------------
----- FUNCTIONS
------------------------------------------------------------------------------
+    🐺 LXR Contraband System - Client Script
+    client/client.lua
+
+    ═══════════════════════════════════════════════════════════════════════════════
+    Server:    The Land of Wolves 🐺
+    Developer: iBoss21 / The Lux Empire
+    Website:   https://www.wolves.land
+    Discord:   https://discord.gg/CrKcWdfd3A
+    Store:     https://theluxempire.tebex.io
+
+    © 2026 iBoss21 / The Lux Empire | wolves.land | All Rights Reserved
+    ═══════════════════════════════════════════════════════════════════════════════
+]]
+
+-- ████████████████████████████████████████████████████████████████████████████████
+-- ████████████████████████ LOCALS ████████████████████████████████████████████████
+-- ████████████████████████████████████████████████████████████████████████████████
+
+local PedPrompt = nil
+local Entities  = {}
+
+-- Resolve max inventory slots based on framework and QuickSlots setting
+local slots
+if Config.QuickSlots then
+    slots = 5
+elseif LXRFramework.Name == 'lxr-core' then
+    slots = exports['lxr-core']:GetConfig().Player.MaxInvSlots
+elseif LXRFramework.Name == 'rsg-core' then
+    slots = exports['rsg-core']:GetConfig().Player.MaxInvSlots
+else
+    slots = 30 -- safe default for VORP / standalone
+end
+
+-- ████████████████████████████████████████████████████████████████████████████████
+-- ████████████████████████ FUNCTIONS █████████████████████████████████████████████
+-- ████████████████████████████████████████████████████████████████████████████████
 
 local function randomDecimal(min, max)
     local rand = min + math.random() * (max - min)
@@ -12,7 +50,13 @@ local function randomDecimal(min, max)
 end
 
 local function CheckForItems()
-    local items = exports['lxr-inventory']:GetSlotData(1, slots)
+    local items
+    if LXRFramework.Name == 'rsg-core' then
+        items = exports['rsg-inventory']:GetSlotData(1, slots)
+    else
+        -- lxr-core and compatible (lxr-inventory is the default)
+        items = exports['lxr-inventory']:GetSlotData(1, slots)
+    end
     for _, v in pairs(items) do
         if v and Config.Contraband[v.name] then
             return v
@@ -52,15 +96,15 @@ local function SellToPed(target)
     while #(GetEntityCoords(ped) - GetEntityCoords(target)) <= 1.5 do
         if not PedPrompt then
             local sell = Config.Contraband[item.name]
-            item.price = randomDecimal(sell.min, sell.max)
+            item.price  = randomDecimal(sell.min, sell.max)
             item.amount = math.random(1, item.amount)
-            CreatePrompt(item.name..' '..item.amount..' ( $'..item.price..' Each)')
+            CreatePrompt(item.name .. ' ' .. item.amount .. ' ( $' .. item.price .. ' Each)')
         end
         if PromptHasHoldModeCompleted(PedPrompt) then
             PromptDelete(PedPrompt)
             PedPrompt = nil
             ClearPedTasksImmediately(target)
-            return TriggerServerEvent('lxr-sellcontraband:server:sell', item)
+            return TriggerServerEvent('lxr-contraband:server:sell', item)
         end
         Wait(100)
     end
@@ -70,9 +114,9 @@ local function SellToPed(target)
     end
 end
 
------------------------------------------------------------------------------
----- THREADS
------------------------------------------------------------------------------
+-- ████████████████████████████████████████████████████████████████████████████████
+-- ████████████████████████ THREADS ███████████████████████████████████████████████
+-- ████████████████████████████████████████████████████████████████████████████████
 
 CreateThread(function()
     local pid = PlayerId()
