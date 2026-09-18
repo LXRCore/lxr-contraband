@@ -6,162 +6,75 @@
     ███████╗██╔╝ ██╗██║  ██║      ╚██████╗╚██████╔╝██║ ╚████║   ██║   ██║  ██║██║  ██║██████╔╝██║  ██║██║ ╚████║██████╔╝
     ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝
 
-    🐺 LXR Contraband System
+    LXR Core - Contraband
 
-    This configuration file controls the contraband selling system for RedM.
-    Players can sell contraband items to NPCs for dynamic prices.
+    The trade nobody admits to. A contact at a fence hands out running
+    contracts — so many of an illegal thing to a dead drop out in the
+    country before the clock runs out — and pays over the ledger for the
+    risk. Carrying it is the risk: a tip-off at the drop can put the law on
+    the wire, and the law seizes what it finds. Everything illegal in the
+    core catalog qualifies; nothing here is a second list.
 
-    ═══════════════════════════════════════════════════════════════════════════════
-    SERVER INFORMATION
-    ═══════════════════════════════════════════════════════════════════════════════
+    Brand:       LXRCore — Lux Empire eXperience RedM Core
+    Product:     wolves.land / The Land of Wolves
+    Developer:   iBoss21 / LXRCore
+    Website:     https://www.lxrcore.com
+    Discord:     https://discord.gg/ZHMKVYyhBa (development)
+    GitHub:      https://github.com/LXRCore
 
-    Server:      The Land of Wolves 🐺
-    Tagline:     Georgian RP 🇬🇪 | მგლების მიწა - რჩეულთა ადგილი!
-    Description: ისტორია ცოცხლდება აქ! (History Lives Here!)
-    Type:        Serious Hardcore Roleplay
-    Access:      Discord & Whitelisted
+    Version: 3.0.0
+    Performance Target: 0.00 ms idle (interact points; one 30 s expiry tick on the server)
 
-    Developer:   iBoss21 / The Lux Empire
-    Website:     https://www.wolves.land
-    Discord:     https://discord.gg/CrKcWdfd3A
-    GitHub:      https://github.com/iBoss21
-    Store:       https://theluxempire.tebex.io
-    Server:      https://servers.redm.net/servers/detail/8gj7eb
-
-    ═══════════════════════════════════════════════════════════════════════════════
-
-    Version: 1.0.0
-    Performance Target: Optimized for minimal server overhead and client FPS impact
-
-    Framework Support:
-    - LXR Core (Primary)
-    - RSG Core (Primary)
-    - VORP Core (Supported / Legacy)
-    - Standalone (Fallback)
-
-    ═══════════════════════════════════════════════════════════════════════════════
-    CREDITS
-    ═══════════════════════════════════════════════════════════════════════════════
-
-    Script Author: iBoss21 / The Lux Empire for The Land of Wolves
-
-    © 2026 iBoss21 / The Lux Empire | wolves.land | All Rights Reserved
+    © 2026 iBoss21 / LXRCore | lxrcore.com | All Rights Reserved
 ]]
 
--- ═══════════════════════════════════════════════════════════════════════════════
--- 🐺 RESOURCE NAME PROTECTION - RUNTIME CHECK
--- ═══════════════════════════════════════════════════════════════════════════════
-
-local REQUIRED_RESOURCE_NAME = "lxr-contraband"
-local currentResourceName = GetCurrentResourceName()
-
-if currentResourceName ~= REQUIRED_RESOURCE_NAME then
-    error(string.format([[
-
-        ═══════════════════════════════════════════════════════════════════════════════
-        ❌ CRITICAL ERROR: RESOURCE NAME MISMATCH ❌
-        ═══════════════════════════════════════════════════════════════════════════════
-
-        Expected: %s
-        Got: %s
-
-        This resource is branded and must maintain the correct name.
-        Rename the folder to "%s" to continue.
-
-        🐺 wolves.land - The Land of Wolves
-
-        ═══════════════════════════════════════════════════════════════════════════════
-
-    ]], REQUIRED_RESOURCE_NAME, currentResourceName, REQUIRED_RESOURCE_NAME))
-end
-
-Config = {}
+Config = Config or {}
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ SERVER BRANDING & INFO ████████████████████████████████
+-- ████████████████████████ LANGUAGE ██████████████████████████████████████████████
 -- ████████████████████████████████████████████████████████████████████████████████
+Config.Lang = 'en'
 
-Config.ServerInfo = {
-    name      = 'The Land of Wolves 🐺',
-    tagline   = 'Georgian RP 🇬🇪 | მგლების მიწა - რჩეულთა ადგილი!',
-    developer = 'iBoss21 / The Lux Empire',
-    website   = 'https://www.wolves.land',
-    discord   = 'https://discord.gg/CrKcWdfd3A',
-    github    = 'https://github.com/iBoss21',
-    store     = 'https://theluxempire.tebex.io',
+-- ████████████████████████████████████████████████████████████████████████████████
+-- ████████████████████████ CONTACTS ══════════════════════════════════════════════
+-- ████████████████████████████████████████████████████████████████████████████████
+Config.Contacts = {
+    { id = 'emerald', label = 'The man behind Emerald Station', coords = vector3(1524.10, 442.30, 90.68), heading = 220.0, ped = 'u_m_m_emrfarmhand_01' },
+    { id = 'vanhorn', label = 'The Van Horn dock hand', coords = vector3(2975.20, 520.60, 44.80), heading = 300.0, ped = 'u_m_m_vhtbartender_01' },
+}
+
+-- dead drops the contracts send runners to (a random one each time)
+Config.Drops = {
+    { label = 'the burnt cabin north of Valentine', coords = vector3(-215.30, 1148.20, 152.40) },
+    { label = 'the hollow oak by Flatneck Station', coords = vector3(-330.60, -285.10, 89.90) },
+    { label = 'the old mill on Kamassa', coords = vector3(1965.40, -1100.30, 41.60) },
+    { label = 'the boathouse at Lagras', coords = vector3(2089.10, -616.40, 42.10) },
+    { label = 'the ruined chapel near Rhodes', coords = vector3(1156.40, -1585.90, 71.20) },
+    { label = 'the coal chute at Annesburg', coords = vector3(2840.60, 1400.20, 78.10) },
 }
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ FRAMEWORK CONFIGURATION ███████████████████████████████
+-- ████████████████████████ CONTRACTS ═════════════════════════════════════════════
 -- ████████████████████████████████████████████████████████████████████████████████
-
---[[
-    Framework Priority (in order):
-    1. LXR-Core  (Primary)
-    2. RSG-Core  (Primary)
-    3. VORP Core (Supported / Legacy)
-    4. Standalone (Fallback)
-
-    Set to 'auto' to let the resource detect the framework automatically,
-    or set manually to one of: 'lxr-core', 'rsg-core', 'vorp_core', 'standalone'
-]]
-Config.Framework = 'auto'
-
--- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ CONTRABAND CONFIGURATION ██████████████████████████████
--- ████████████████████████████████████████████████████████████████████████████████
-
--- Set to true to only check slots 1-5 for contraband items to sell.
-Config.QuickSlots = false
-
-Config.Contraband = {
-    ['apple_moonshine']    = { min = 0.5,  max = 0.9 },
-    ['cider_moonshine']    = { min = 0.3,  max = 0.5 },
-    ['tropical_moonshine'] = { min = 0.1,  max = 0.3 },
-    ['tobacco']            = { min = 0.05, max = 0.1 },
+Config.Contracts = {
+    -- what the contacts ask for: illegal catalog items (legal = false) in these categories; quantity range; pay over the ledger
+    categories = { 'contraband', 'alcohol', 'material', 'ammo' },
+    exclude = { 'bank_bag', 'strongbox', 'mail_bag', 'counterfeit_plate', 'still_kit', 'blood_dollar' },
+    amount = { min = 6, max = 20 },
+    premium = 2.0,               -- × ledger value: the fence pays for the risk
+    minutes = 20,                -- to reach the drop
+    cooldownMs = 600000,         -- per runner between contracts
+    oneAtATime = true,
 }
 
 -- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ DEBUG SETTINGS ████████████████████████████████████████
+-- ████████████████████████ THE RISK ══════════════════════════════════════════════
 -- ████████████████████████████████████████████████████████████████████████████████
+Config.Risk = {
+    tipOff = 0.25,               -- chance a delivery raises a call to the law (lxr-dispatch)
+    tipOffKind = 'lawcall',
+    tipOffOnlyIfLawOnDuty = true,
+}
 
-Config.Debug = false -- Enable debug prints and extra logging
-
--- ████████████████████████████████████████████████████████████████████████████████
--- ████████████████████████ END OF CONFIGURATION ██████████████████████████████████
--- ████████████████████████████████████████████████████████████████████████████████
-
--- Startup banner
-CreateThread(function()
-    Wait(1000)
-    print([[
-
-        ═══════════════════════════════════════════════════════════════════════════════
-
-            ██╗     ██╗  ██╗██████╗        ██████╗ ██████╗ ██████╗ ███████╗
-            ██║     ╚██╗██╔╝██╔══██╗      ██╔════╝██╔═══██╗██╔══██╗██╔════╝
-            ██║      ╚███╔╝ ██████╔╝█████╗██║     ██║   ██║██████╔╝█████╗  
-            ██║      ██╔██╗ ██╔══██╗╚════╝██║     ██║   ██║██╔══██╗██╔══╝  
-            ███████╗██╔╝ ██╗██║  ██║      ╚██████╗╚██████╔╝██║  ██║███████╗
-            ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝       ╚═════╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝
-
-        ═══════════════════════════════════════════════════════════════════════════════
-        🐺 CONTRABAND SYSTEM - SUCCESSFULLY LOADED
-        ═══════════════════════════════════════════════════════════════════════════════
-
-        Version:   1.0.0
-        Server:    The Land of Wolves 🐺
-
-        Framework: Auto-detect enabled
-        Debug:     ]] .. (Config.Debug and 'ENABLED' or 'DISABLED') .. [[
-
-        ═══════════════════════════════════════════════════════════════════════════════
-
-        Developer: iBoss21 / The Lux Empire
-        Website:   https://www.wolves.land
-        Discord:   https://discord.gg/CrKcWdfd3A
-
-        ═══════════════════════════════════════════════════════════════════════════════
-
-    ]])
-end)
+Config.Security = { rateLimit = { windowMs = 2000, burst = 6 }, maxDistance = 4.0, promptDistance = 2.5, dropRadius = 6.0 }
+Config.Debug = { printBanner = true, log = true }
