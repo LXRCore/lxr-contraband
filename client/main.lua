@@ -24,7 +24,7 @@ local function take(contact)
     if not ok then return toast('error.' .. tostring(res), 'error') end
     job = res
     dropBlip = N(0x554D9D53F696D002, 1664425300, res.coords.x, res.coords.y, res.coords.z)
-    if dropBlip and dropBlip ~= 0 then N(0x74F74D3207ED525C, dropBlip, joaat('blip_ambient_treasure'), true) N(0x9CB1A1623062F402, dropBlip, Lang:t('ui.drop')) end
+    if dropBlip and dropBlip ~= 0 then N(0x74F74D3207ED525C, dropBlip, joaat('blip_ambient_treasure'), true) if GetResourceState('lxr-mapcolor') == 'started' then pcall(function() N(0x662D364ABF16DE2F, dropBlip, exports['lxr-mapcolor']:modifier('gunsmith')) end) end N(0x9CB1A1623062F402, dropBlip, Lang:t('ui.drop')) end
     exports['lxr-interact']:AddPoint('lxr-contraband:drop', vector3(res.coords.x, res.coords.y, res.coords.z), { label = Lang:t('ui.drop'), distance = Config.Security.dropRadius, options = {
         { label = Lang:t('ui.leave_goods'), key = 'J', onSelect = function()
             local ok2, r2, extra = LXR.RPC.Server('lxr-contraband:deliver')
